@@ -149,7 +149,7 @@ plt.xlabel('Épocas')
 plt.ylabel('Perda (Loss)')
 plt.title('Curva de Treinamento')
 plt.legend()
-plt.savefig('comparacao_tempos_execucao.png')
+plt.savefig('comparacao_tempos_execucao_mlp.png')
 
 # Calcular e plotar a matriz de confusão
 conf_matrix = confusion_matrix(test_targets, test_preds)
@@ -159,4 +159,4 @@ sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False,
 plt.xlabel('Predito')
 plt.ylabel('Real')
 plt.title('Matriz de Confusão ')
-plt.savefig('Matriz_de_confusao')
+plt.savefig('Matriz_de_confusao_mlp')
