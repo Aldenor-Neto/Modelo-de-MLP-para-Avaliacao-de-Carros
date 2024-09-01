@@ -25,6 +25,7 @@ X = encoder.fit_transform(data.iloc[:, :-1]).toarray()
 
 # Codificação One-Hot para a variável alvo
 y = pd.get_dummies(data['class']).values
+class_labels = list(pd.get_dummies(data['class']).columns)  # Lista de rótulos de classe
 
 # Divisão inicial em conjunto de treino e conjunto temporário (que será dividido em teste e validação)
 X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -153,8 +154,9 @@ plt.savefig('comparacao_tempos_execucao.png')
 # Calcular e plotar a matriz de confusão
 conf_matrix = confusion_matrix(test_targets, test_preds)
 plt.figure(figsize=(8, 6))
-sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False, 
+            xticklabels=class_labels, yticklabels=class_labels)  # Adiciona rótulos das classes
 plt.xlabel('Predito')
 plt.ylabel('Real')
-plt.title('Matriz de Confusão')
+plt.title('Matriz de Confusão ')
 plt.savefig('Matriz_de_confusao')
