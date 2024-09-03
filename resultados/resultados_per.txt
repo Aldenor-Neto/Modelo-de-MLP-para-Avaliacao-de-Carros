@@ -1,0 +1,20 @@
+Repetição: 1
+Acurácia Final: 0.8786
+Repetição: 2
+Acurácia Final: 0.8844
+Repetição: 3
+Acurácia Final: 0.8786
+Repetição: 4
+Acurácia Final: 0.8844
+Repetição: 5
+Acurácia Final: 0.8844
+Repetição: 6
+Acurácia Final: 0.8844
+Repetição: 7
+Acurácia Final: 0.8844
+Repetição: 8
+Acurácia Final: 0.8902
+Repetição: 9
+Acurácia Final: 0.8844
+Repetição: 10
+Acurácia Final: 0.8902

@@ -1,0 +1,40 @@
+Repetição: 1
+Acurácia Final: 1.0000
+Neuronios: 64
+Camadas: 32
+Repetição: 2
+Acurácia Final: 0.9884
+Neuronios: 64
+Camadas: 32
+Repetição: 3
+Acurácia Final: 0.9884
+Neuronios: 64
+Camadas: 32
+Repetição: 4
+Acurácia Final: 0.9942
+Neuronios: 64
+Camadas: 32
+Repetição: 5
+Acurácia Final: 1.0000
+Neuronios: 64
+Camadas: 32
+Repetição: 6
+Acurácia Final: 0.9884
+Neuronios: 64
+Camadas: 32
+Repetição: 7
+Acurácia Final: 0.9942
+Neuronios: 64
+Camadas: 32
+Repetição: 8
+Acurácia Final: 0.9884
+Neuronios: 64
+Camadas: 32
+Repetição: 9
+Acurácia Final: 0.9942
+Neuronios: 64
+Camadas: 32
+Repetição: 10
+Acurácia Final: 0.9942
+Neuronios: 64
+Camadas: 32

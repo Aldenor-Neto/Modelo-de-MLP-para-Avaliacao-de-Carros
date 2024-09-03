@@ -62,94 +62,90 @@ class Perceptron(nn.Module):
 
 input_size = X_train.shape[1]
 output_size = y_train.shape[1]
+for i in range(10):
+    model = Perceptron(input_size, output_size)
 
-model = Perceptron(input_size, output_size)
+    # Definindo o critério de perda e o otimizador
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-# Definindo o critério de perda e o otimizador
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+    # Armazenar as perdas e acurácias para cada época
+    train_losses = []
+    val_losses = []
+    test_losses = []
 
-# Armazenar as perdas e acurácias para cada época
-train_losses = []
-val_losses = []
-test_losses = []
-test_accuracies = []  # Lista para armazenar as acurácias de teste de cada época
-
-# Treinamento do modelo
-num_epochs = 100
-for epoch in range(num_epochs):
-    # Modo de treino
-    model.train()
-    train_loss = 0
-    for X_batch, y_batch in train_loader:
-        optimizer.zero_grad()
-        outputs = model(X_batch)
-        loss = criterion(outputs, torch.max(y_batch, 1)[1])
-        loss.backward()
-        optimizer.step()
-        train_loss += loss.item()
-    
-    train_loss /= len(train_loader)
-    train_losses.append(train_loss)
-    
-    # Avaliação no conjunto de validação
-    model.eval()
-    val_loss = 0
-    with torch.no_grad():
-        for X_batch, y_batch in val_loader:
+    # Treinamento do modelo
+    num_epochs = 100
+    for epoch in range(num_epochs):
+        # Modo de treino
+        model.train()
+        train_loss = 0
+        for X_batch, y_batch in train_loader:
+            optimizer.zero_grad()
             outputs = model(X_batch)
             loss = criterion(outputs, torch.max(y_batch, 1)[1])
-            val_loss += loss.item()
-    
-    val_loss /= len(val_loader)
-    val_losses.append(val_loss)
+            loss.backward()
+            optimizer.step()
+            train_loss += loss.item()
+        
+        train_loss /= len(train_loader)
+        train_losses.append(train_loss)
+        
+        # Avaliação no conjunto de validação
+        model.eval()
+        val_loss = 0
+        with torch.no_grad():
+            for X_batch, y_batch in val_loader:
+                outputs = model(X_batch)
+                loss = criterion(outputs, torch.max(y_batch, 1)[1])
+                val_loss += loss.item()
+        
+        val_loss /= len(val_loader)
+        val_losses.append(val_loss)
 
-    # Avaliação no conjunto de teste
-    test_loss = 0
-    test_preds = []
-    test_targets = []
-    with torch.no_grad():
-        for X_batch, y_batch in test_loader:
-            outputs = model(X_batch)
-            loss = criterion(outputs, torch.max(y_batch, 1)[1])
-            test_loss += loss.item()
-            test_preds.append(outputs.argmax(dim=1).cpu().numpy())
-            test_targets.append(torch.max(y_batch, 1)[1].cpu().numpy())
+        # Avaliação no conjunto de teste
+        test_loss = 0
+        test_preds = []
+        test_targets = []
+        with torch.no_grad():
+            for X_batch, y_batch in test_loader:
+                outputs = model(X_batch)
+                loss = criterion(outputs, torch.max(y_batch, 1)[1])
+                test_loss += loss.item()
+                test_preds.append(outputs.argmax(dim=1).cpu().numpy())
+                test_targets.append(torch.max(y_batch, 1)[1].cpu().numpy())
 
-    test_loss /= len(test_loader)
-    test_losses.append(test_loss)
+        test_loss /= len(test_loader)
+        test_losses.append(test_loss)
 
-    # Avaliando a acurácia no conjunto de teste
-    test_preds = np.concatenate(test_preds)
-    test_targets = np.concatenate(test_targets)
-    test_accuracy = accuracy_score(test_targets, test_preds)
-    test_accuracies.append(test_accuracy)  # Armazena a acurácia de cada época
+        # Avaliando a acurácia no conjunto de teste
+        test_preds = np.concatenate(test_preds)
+        test_targets = np.concatenate(test_targets)
+        test_accuracy = accuracy_score(test_targets, test_preds)
 
-    print(f'Época [{epoch+1}/{num_epochs}], Perda de Treinamento: {train_loss:.4f}, '
-          f'Perda de Validação: {val_loss:.4f}, Perda de Teste: {test_loss:.4f}, '
-          f'Acurácia de Teste: {test_accuracy:.4f}')
+        print(f'Época [{epoch+1}/{num_epochs}], Perda de Treinamento: {train_loss:.4f}, '
+            f'Perda de Validação: {val_loss:.4f}, Perda de Teste: {test_loss:.4f}, '
+            f'Acurácia de Teste: {test_accuracy:.4f}')
+    with open(f'resultados/resultados_per.txt', 'a') as file:
+        file.write(f"Repetição: {i + 1}\nAcurácia Final: {test_accuracy:.4f}\n")
 
-# Calcular a média das acurácias
-mean_accuracy = np.mean(test_accuracies)
-print(f'\nAcurácia Média no Conjunto de Teste: {mean_accuracy:.4f}')
+    # Plotar as curvas de perda
+    plt.figure(figsize=(10, 6))
+    plt.plot(train_losses, label='Perda de Treinamento')
+    plt.plot(val_losses, label='Perda de Validação')
+    plt.plot(test_losses, label='Perda de Teste', linestyle='--', color='red')
+    plt.xlabel('Épocas')
+    plt.ylabel('Perda (Loss)')
+    plt.title('Curva de Treinamento')
+    plt.legend()
+    plt.savefig(f'curvas/comparacao_tempos_execucao_per_{i+1}.png')
 
-# Plotar as curvas de perda
-plt.figure(figsize=(10, 6))
-plt.plot(train_losses, label='Perda de Treinamento')
-plt.plot(val_losses, label='Perda de Validação')
-plt.plot(test_losses, label='Perda de Teste', linestyle='--', color='red')
-plt.xlabel('Épocas')
-plt.ylabel('Perda (Loss)')
-plt.title('Curva de Treinamento')
-plt.legend()
-plt.savefig('comparacao_tempos_execucao_per.png')
-
-# Calcular e plotar a matriz de confusão
-conf_matrix = confusion_matrix(test_targets, test_preds)
-plt.figure(figsize=(8, 6))
-sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False, 
-            xticklabels=class_labels, yticklabels=class_labels)  # Adiciona rótulos das classes
-plt.xlabel('Predito')
-plt.ylabel('Real')
-plt.title('Matriz de Confusão')
-plt.savefig('Matriz_de_confusao_per')
+    # Calcular e plotar a matriz de confusão
+    conf_matrix = confusion_matrix(test_targets, test_preds)
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False, 
+                xticklabels=class_labels, yticklabels=class_labels)  # Adiciona rótulos das classes
+    plt.xlabel('Predito')
+    plt.ylabel('Real')
+    plt.title('Matriz de Confusão')
+    plt.savefig(f'matrizes/Matriz_de_confusao_per_{i+1}')
